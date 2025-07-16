@@ -42,15 +42,20 @@ jobs:
           git pull --rebase
           git push
 
-      # 推送到Gitee仓库
-      - name: 配置Gitee推送
+      # 替换"推送到Gitee"步骤为以下内容：
+
+      - name: 添加SSH密钥
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.GITEE_SSH_KEY }}
+      
+      - name: 配置SSH推送
         run: |
-          git remote add gitee https://gitee.com/two2024/tv.git
+          git remote add gitee git@gitee.com:two2024/tv.git
           git config --local user.email ${{ secrets.GIT_MAIL }}
           git config --local user.name "two2025"
-
+          # 信任Gitee域名
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+      
       - name: 推送到Gitee
         run: git push gitee HEAD:main
-        env:
-          GITEE_USER: ${{ secrets.GITEE_USER }}
-          GITEE_PASSWORD: ${{ secrets.GITEE_PASSWORD }}
