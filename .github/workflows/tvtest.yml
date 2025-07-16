@@ -7,37 +7,50 @@ on:
   push:
     branches:
       - main
-# 解决方案
+
 permissions:
-  contents: write
+  contents: write  # 解决GitHub推送权限问题
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    #runs-on: ubuntu-22.04@20240422.1.0
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # GitHub仓库操作
+      - name: Checkout GitHub code
+        uses: actions/checkout@v4  # 升级到最新版
+        with:
+          persist-credentials: true  # 保留认证信息
     
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5  # 升级到最新版
         with:
           python-version: '3.12.3'
 
       - name: Install dependencies
-        #run: pip install selenium==4.19.0 requests==2.31.0 futures==3.0.5 eventlet==0.36.1
         run: pip install selenium requests futures eventlet
 
       - name: Run itv_all
         run: python ${{ github.workspace }}/tvtest.py
       
-      - name: 提交更改
+      - name: 提交更改到GitHub
         run: |
           git config --local user.email ${{ secrets.GIT_MAIL }}
           git config --local user.name "two2025"
           git add .
-          git commit *.txt -m "Add generated file"
-          git commit *.m3u -m "Add generated file"
-          #git pull --rebase
-          git push -f
+          git commit -m "Add generated file" || echo "No changes to commit"
+          git pull --rebase
+          git push
+
+      # 推送到Gitee仓库
+      - name: 配置Gitee推送
+        run: |
+          git remote add gitee https://gitee.com/two2024/tv.git
+          git config --local user.email ${{ secrets.GIT_MAIL }}
+          git config --local user.name "two2025"
+
+      - name: 推送到Gitee
+        run: git push gitee HEAD:main
+        env:
+          GITEE_USER: ${{ secrets.GITEE_USER }}
+          GITEE_PASSWORD: ${{ secrets.GITEE_PASSWORD }}
