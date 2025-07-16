@@ -7,55 +7,37 @@ on:
   push:
     branches:
       - main
-
+# 解决方案
 permissions:
-  contents: write  # 解决GitHub推送权限问题
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    #runs-on: ubuntu-22.04@20240422.1.0
 
     steps:
-      # GitHub仓库操作
-      - name: Checkout GitHub code
-        uses: actions/checkout@v4  # 升级到最新版
-        with:
-          persist-credentials: true  # 保留认证信息
+      - name: Checkout code
+        uses: actions/checkout@v4
     
       - name: Set up Python
-        uses: actions/setup-python@v5  # 升级到最新版
+        uses: actions/setup-python@v5
         with:
           python-version: '3.12.3'
 
       - name: Install dependencies
+        #run: pip install selenium==4.19.0 requests==2.31.0 futures==3.0.5 eventlet==0.36.1
         run: pip install selenium requests futures eventlet
 
       - name: Run itv_all
         run: python ${{ github.workspace }}/tvtest.py
       
-      - name: 提交更改到GitHub
+      - name: 提交更改
         run: |
           git config --local user.email ${{ secrets.GIT_MAIL }}
           git config --local user.name "two2025"
           git add .
-          git commit -m "Add generated file" || echo "No changes to commit"
-          git pull --rebase
-          git push
-
-      # 替换"推送到Gitee"步骤为以下内容：
-
-      - name: 添加SSH密钥
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.GITEE_SSH_KEY }}
-      
-      - name: 配置SSH推送
-        run: |
-          git remote add gitee git@gitee.com:two2024/tv.git
-          git config --local user.email ${{ secrets.GIT_MAIL }}
-          git config --local user.name "two2025"
-          # 信任Gitee域名
-          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
-      
-      - name: 推送到Gitee
-        run: git push gitee HEAD:main
+          git commit *.txt -m "Add generated file"
+          git commit *.m3u -m "Add generated file"
+          #git pull --rebase
+          git push -f
