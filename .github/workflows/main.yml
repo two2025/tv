@@ -38,15 +38,3 @@ jobs:
           #git commit *.m3u -m "Add generated file"
           #git pull --rebase
           git push -f
-          
-      # 推送到Gitee仓库
-      #- name: 配置Gitee推送
-      #  run: |
-      #    git remote add gitee https://gitee.com/two2024/tv.git
-      #    git config --local user.email ${{ secrets.GIT_MAIL }}
-      #    git config --local user.name "two2025"
-
-      - name: 推送到Gitee (HTTPS)
-        run: |
-          git remote add gitee https://gitee.com/two2024/tv.git
-          git push https://${{ secrets.GITEE_USER }}:${{ secrets.GITEE_PASSWORD }}@gitee.com/two2024/tv.git HEAD:main
