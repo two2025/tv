@@ -42,17 +42,49 @@ jobs:
           #git pull --rebase
           git push -f
 
-      # 新增的 Gitee 推送步骤
-      - name: 配置 Gitee SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.GITEE_SSH_KEY }}
+      # # 新增的 Gitee 推送步骤
+      # - name: 配置 Gitee SSH
+        # uses: webfactory/ssh-agent@v0.9.0
+        # with:
+          # ssh-private-key: ${{ secrets.GITEE_SSH_KEY }}
+
+      # - name: 添加 Gitee 远程仓库
+        # run: |
+          # git remote add gitee git@gitee.com:${{ secrets.GITEE_USER }}/tv.git  # 替换为您的地址
+          # git fetch gitee
+
+      # - name: 推送到 Gitee
+        # run: |
+          # git push gitee HEAD:main --force  # 推送当前分支到 Gitee 的 main 分支
+
+      # 修复 SSH 密钥问题并推送到 Gitee
+      - name: 配置 Gitee SSH (修复版)
+        run: |
+          # 确保 .ssh 目录存在
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          
+          # 正确写入 SSH 私钥
+          echo "${{ secrets.GITEE_SSH_KEY }}" > ~/.ssh/gitee_key
+          chmod 600 ~/.ssh/gitee_key
+          
+          # 添加 Gitee 到已知主机
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          
+          # 创建 SSH 配置文件
+          cat > ~/.ssh/config <<EOF
+          Host gitee.com
+            HostName gitee.com
+            IdentityFile ~/.ssh/gitee_key
+            IdentitiesOnly yes
+          EOF
 
       - name: 添加 Gitee 远程仓库
         run: |
-          git remote add gitee git@gitee.com:${{ secrets.GITEE_USER }}/tv.git  # 替换为您的地址
+          git remote add gitee git@gitee.com:${{ secrets.GITEE_USER }}/your_repo.git  # 替换为您的地址
           git fetch gitee
 
       - name: 推送到 Gitee
         run: |
-          git push gitee HEAD:main --force  # 推送当前分支到 Gitee 的 main 分支
+          git push gitee HEAD:main --force
