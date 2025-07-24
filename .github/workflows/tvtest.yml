@@ -82,7 +82,7 @@ jobs:
 
       - name: 添加 Gitee 远程仓库
         run: |
-          git remote add gitee git@gitee.com:${{ secrets.GITEE_USER }}/your_repo.git  # 替换为您的地址
+          git remote add gitee git@gitee.com:${{ secrets.GITEE_USER }}/tv.git  # 替换为您的地址
           git fetch gitee
 
       - name: 推送到 Gitee
