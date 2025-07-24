@@ -11,3 +11,5 @@ eventlet.monkey_patch()
 
 with open("itvlist.txt", 'w', encoding='utf-8') as file:
     file.write('央视频道,#genre#\n')
+with open("itvlist.m3u", 'w', encoding='utf-8') as file:
+    file.write('央视频道,#genre#\n')
