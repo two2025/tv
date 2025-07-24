@@ -9,5 +9,5 @@ import eventlet
 eventlet.monkey_patch()
 
 
-with open("itvlist1.txt", 'w', encoding='utf-8') as file:
+with open("itvlist.txt", 'w', encoding='utf-8') as file:
     file.write('央视频道,#genre#\n')
