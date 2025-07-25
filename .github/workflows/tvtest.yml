@@ -42,11 +42,22 @@ jobs:
           #git pull --rebase
           git push -f
           
-      # 使用 HTTPS 替代 SSH
-      - name: 配置 Gitee HTTPS 推送
+      # Gitee 推送解决方案
+      - name: 准备 Gitee 推送
         run: |
+          # 确保完整的提交历史
+          git fetch --unshallow || true
+          
+          # 添加 Gitee 远程
           git remote add gitee https://${{ secrets.GITEE_USER }}:${{ secrets.GITEE_TOKEN }}@gitee.com/two2024/tv.git
           
-      - name: 推送到 Gitee (HTTPS)
+          # 获取 Gitee 仓库的完整历史
+          git fetch gitee --unshallow || true
+          
+          # 重置为最新状态
+          git reset --hard HEAD
+
+      - name: 推送到 Gitee
         run: |
+          # 强制推送到 Gitee
           git push gitee HEAD:main --force
