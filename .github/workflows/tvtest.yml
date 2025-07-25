@@ -45,7 +45,7 @@ jobs:
       # 使用 HTTPS 替代 SSH
       - name: 配置 Gitee HTTPS 推送
         run: |
-          git remote add gitee https://${{ secrets.GITEE_USER }}:${{ secrets.GITEE_TOKEN }}@gitee.com/${{ secrets.GITEE_USER }}/tv.git
+          git remote add gitee https://${{ secrets.GITEE_USER }}:${{ secrets.GITEE_TOKEN }}@gitee.com/two2024/tv.git
           
       - name: 推送到 Gitee (HTTPS)
         run: |
